@@ -1,0 +1,85 @@
+﻿<Window x:Class="ScriptManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Closing="Window_Closing"
+        Title="Script Manager" Height="445" Width="892">
+    <Grid RenderTransformOrigin="0.5,0.5" Margin="0,0,-1,0" Height="433" VerticalAlignment="Top">
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform Angle="-0.03"/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Grid.RenderTransform>
+
+        <ListBox x:Name="lstScripts" 
+                 SelectionChanged="LstScripts_SelectionChanged" 
+                 AllowDrop="True" 
+                 HorizontalAlignment="Left" 
+                 Height="400" Margin="14,13,0,0" 
+                 VerticalAlignment="Top" 
+                 Width="294">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding FileName}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="btnLoadScripts" 
+                Content="Load Scripts" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Margin="325,11,0,0" 
+                Width="136" 
+                Click="BtnLoadScripts_Click" 
+                RenderTransformOrigin="0.512,2.572" 
+                Height="19"/>
+        <Button x:Name="btnClearScripts" 
+                Click="BtnClearScripts_Click" 
+                Content="Clear Scripts" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Margin="325,35,0,0" 
+                RenderTransformOrigin="0.512,2.572" 
+                Width="135" 
+                Height="20"/>
+        <Label Name="LabelEncode" 
+               Content="編碼方式" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" 
+               Margin="320,361,0,0" 
+               RenderTransformOrigin="0.512,2.572" 
+               Width="135" 
+               Height="25">
+        </Label>
+        <ComboBox x:Name="cmbEncoding" 
+                  SelectionChanged="CmbEncoding_SelectionChanged" 
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Top" 
+                  Margin="323,386,0,0" 
+                  RenderTransformOrigin="0.512,2.572" 
+                  Width="135" 
+                  Height="25"></ComboBox>
+        <TextBox x:Name="txtScriptContent" 
+                   HorizontalAlignment="Left" 
+                   HorizontalScrollBarVisibility="Auto" 
+                   VerticalScrollBarVisibility="Auto" 
+                   AcceptsReturn="True"
+                   Height="401" Margin="478,10,0,0" 
+                   TextWrapping="Wrap" 
+                   VerticalAlignment="Top" 
+                   Width="403" />
+        <!--<TreeView x:Name="myTreeView"
+                   HorizontalAlignment="Left" 
+                   Height="398" Margin="890,9,0,0" 
+                   VerticalAlignment="Top" 
+                   Width="187">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                    <TextBlock Text="{Binding CategoryName}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>-->
+    </Grid>
+</Window>
