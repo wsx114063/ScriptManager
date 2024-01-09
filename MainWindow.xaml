@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Closing="Window_Closing"
         Title="Script Manager" Height="445" Width="892">
-    <Grid RenderTransformOrigin="0.5,0.5" Margin="0,0,-1,0" Height="433" VerticalAlignment="Top">
+    <Grid RenderTransformOrigin="0.5,0.5" Margin="0,0,3,0" Height="423" VerticalAlignment="Center">
         <Grid.RenderTransform>
             <TransformGroup>
                 <ScaleTransform/>
@@ -70,16 +70,7 @@
                    TextWrapping="Wrap" 
                    VerticalAlignment="Top" 
                    Width="403" />
-        <!--<TreeView x:Name="myTreeView"
-                   HorizontalAlignment="Left" 
-                   Height="398" Margin="890,9,0,0" 
-                   VerticalAlignment="Top" 
-                   Width="187">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding CategoryName}" />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>-->
+        <Button Content="△" x:Name="UpButton" Click="UpButton_Click"  HorizontalAlignment="Left" Margin="324,110,0,0" VerticalAlignment="Top" Width="15" Height="34"/>
+        <Button Content="▽" x:Name="DownButton" Click="DownButton_Click" HorizontalAlignment="Left" Margin="324,148,0,0" VerticalAlignment="Top" Width="15" Height="34"/>
     </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ScriptManager
 {
@@ -16,6 +17,7 @@ namespace ScriptManager
     public partial class MainWindow : Window
     {
         private string scriptFolderPath = @"Script";
+        private string defaultEncodingList = "EncodingList.json";
         ObservableCollection<Category> Categories = new ObservableCollection<Category>();
         public MainWindow()
         {
@@ -31,12 +33,35 @@ namespace ScriptManager
         private void GetEncodingType()
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            foreach (var item in Encoding.GetEncodings().OrderBy(x => x.Name))
+            var defaultEncodingList = "EncodingList.json";
+            if (File.Exists(defaultEncodingList))
             {
-                Encoding e = item.GetEncoding();
-                cmbEncoding.Items.Add(e.WebName);
+                using (var reader = new StreamReader(defaultEncodingList, detectEncodingFromByteOrderMarks: true))
+                {
+                    var encodeList = JsonSerializer.Deserialize<List<string>>(reader.ReadToEnd());
+                    foreach (var item in encodeList)
+                    {
+                        cmbEncoding.Items.Add(item);
+                    }
+
+                    if (FindIndexOfItem(cmbEncoding, Encoding.UTF8.WebName) == -1)
+                    {
+                        cmbEncoding.Items.Add(Encoding.UTF8.WebName);
+                    }
+
+                    cmbEncoding.SelectedValue = Encoding.UTF8.WebName;
+                }
             }
-            cmbEncoding.SelectedValue = Encoding.UTF8.WebName;
+            else
+            {
+                foreach (var item in Encoding.GetEncodings().OrderBy(x => x.Name))
+                {
+                    Encoding e = item.GetEncoding();
+                    cmbEncoding.Items.Add(e.WebName);
+                }
+
+                cmbEncoding.SelectedValue = Encoding.UTF8.WebName;
+            }
         }
 
         private void CmbEncoding_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -81,7 +106,7 @@ namespace ScriptManager
                 {
                     var fileName = Path.GetFileName(filePath);
                     lstScripts.Items.Add(new ScriptItem { FilePath = filePath, FileName = fileName });
-                    
+
                 }
             }
         }
@@ -143,11 +168,63 @@ namespace ScriptManager
                 }
             }
         }
+
+        private void MoveItem(int direction)
+        {
+            try
+            {
+                if (lstScripts.SelectedItem != null)
+                {
+                    // 檢查是否有選擇項目
+                    if (lstScripts.SelectedItem == null || lstScripts.Items.Count < 2) return;
+
+                    int newIndex = lstScripts.SelectedIndex + direction;
+
+                    // 檢查新索引是否在有效範圍內
+                    if (newIndex < 0 || newIndex >= lstScripts.Items.Count) return;
+
+                    object selected = lstScripts.SelectedItem;
+                    lstScripts.Items.Remove(selected);
+                    lstScripts.Items.Insert(newIndex, selected);
+                    lstScripts.SelectedIndex = newIndex;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"oops! 項目移動時，出現了意外{ex.Message}");
+            }
+        }
+
+        private void UpButton_Click(object sender, RoutedEventArgs e)
+        {
+            MoveItem(-1);
+        }
+        private void DownButton_Click(object sender, RoutedEventArgs e)
+        {
+            MoveItem(1);
+        }
+
         private void SaveData(string savePath)
         {
-            var items = lstScripts.Items.OfType<ScriptItem>().ToList();
-            string json = JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true });
+            var scriptItems = lstScripts.Items.OfType<ScriptItem>().ToList();
+            var json = JsonSerializer.Serialize(scriptItems, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(savePath, json);
+
+            var cmbItems = cmbEncoding.Items.OfType<string>().ToList();
+            json = JsonSerializer.Serialize(cmbItems, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(defaultEncodingList, json);
+        }
+
+        private int FindIndexOfItem(ComboBox comboBox, string itemToFind)
+        {
+            for (int i = 0; i < comboBox.Items.Count; i++)
+            {
+                if (comboBox.Items[i].ToString() == itemToFind)
+                {
+                    return i;
+                }
+            }
+            return -1; // 如果未找到，返回 -1
         }
     }
 }
